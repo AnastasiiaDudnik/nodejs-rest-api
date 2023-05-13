@@ -9,6 +9,8 @@ const {
   // removeContact,
 } = require("../../models/contacts");
 
+const { HttpError } = require("../../helpers");
+
 router.get("/", async (req, res, next) => {
   try {
     const result = await listContacts();
@@ -22,11 +24,11 @@ router.get("/:contactId", async (req, res, next) => {
   try {
     const { id } = req.params;
     const result = await getContactById(id);
+
     if (!result) {
-      return res
-        .status(404)
-        .json({ message: `Contact with id: ${id} not found` });
+      throw HttpError(404, `Contact with id: ${id} not found`);
     }
+
     res.json(result);
   } catch (error) {
     next(error);
