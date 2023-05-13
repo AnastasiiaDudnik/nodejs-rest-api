@@ -22,11 +22,11 @@ router.get("/", async (req, res, next) => {
 
 router.get("/:contactId", async (req, res, next) => {
   try {
-    const { id } = req.params;
-    const result = await getContactById(id);
+    const { contactId } = req.params;
+    const result = await getContactById(contactId);
 
     if (!result) {
-      throw HttpError(404, `Contact with id: ${id} not found`);
+      throw HttpError(404, `Contact with id "${contactId}" not found`);
     }
 
     res.json(result);
