@@ -1,15 +1,21 @@
 const express = require("express");
-
+const Joi = require("joi");
 const router = express.Router();
 
 const {
   listContacts,
   getContactById,
-  // addContact,
+  addContact,
   // removeContact,
 } = require("../../models/contacts");
 
 const { HttpError } = require("../../helpers");
+
+const contactAddSchema = Joi.object({
+  name: Joi.string().required(),
+  email: Joi.string().required(),
+  phone: Joi.string().required(),
+});
 
 router.get("/", async (req, res, next) => {
   try {
@@ -36,7 +42,18 @@ router.get("/:contactId", async (req, res, next) => {
 });
 
 router.post("/", async (req, res, next) => {
-  res.json({ message: "template message" });
+  try {
+    const { error } = contactAddSchema.validate(req.body);
+
+    if (error) {
+      throw HttpError(400, error.message);
+    }
+
+    const result = await addContact(req.body);
+    res.status(201).json(result);
+  } catch (error) {
+    next(error);
+  }
 });
 
 router.delete("/:contactId", async (req, res, next) => {
