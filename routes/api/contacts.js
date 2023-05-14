@@ -10,14 +10,17 @@ const {
   updateContact,
 } = require("../../controllers/contactsController");
 
+const { contactAddSchema } = require("../../schemas/contactsValidate");
+const { validate } = require("../../decorators");
+
 router.get("/", getAllContacts);
 
 router.get("/:contactId", getOneById);
 
-router.post("/", addToContacts);
+router.post("/", validate(contactAddSchema), addToContacts);
 
 router.delete("/:contactId", deleteContact);
 
-router.put("/:contactId", updateContact);
+router.put("/:contactId", validate(contactAddSchema), updateContact);
 
 module.exports = router;

@@ -1,5 +1,3 @@
-const Joi = require("joi");
-
 const {
   listContacts,
   getContactById,
@@ -10,14 +8,6 @@ const {
 
 const { HttpError } = require("../helpers");
 const { controllerWrap } = require("../decorators");
-
-const contactAddSchema = Joi.object({
-  name: Joi.string().required(),
-  email: Joi.string()
-    .email({ minDomainSegments: 2, tlds: { allow: ["com", "net"] } })
-    .required(),
-  phone: Joi.string().required(),
-});
 
 const getAllContacts = async (req, res) => {
   const result = await listContacts();
@@ -36,12 +26,6 @@ const getOneById = async (req, res) => {
 };
 
 const addToContacts = async (req, res, next) => {
-  const { error } = contactAddSchema.validate(req.body);
-
-  if (error) {
-    throw HttpError(400, error.message);
-  }
-
   const result = await addContact(req.body);
   res.status(201).json(result);
 };
@@ -60,11 +44,6 @@ const deleteContact = async (req, res, next) => {
 };
 
 const updateContact = async (req, res, next) => {
-  const { error } = contactAddSchema.validate(req.body);
-
-  if (error) {
-    throw HttpError(400, error.message);
-  }
   const { contactId } = req.params;
   const result = await updateContactById(contactId, req.body);
 
