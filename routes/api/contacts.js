@@ -7,7 +7,7 @@ const {
   getContactById,
   addContact,
   updateContactById,
-  // removeContact,
+  removeContact,
 } = require("../../models/contacts");
 
 const { HttpError } = require("../../helpers");
@@ -60,7 +60,22 @@ router.post("/", async (req, res, next) => {
 });
 
 router.delete("/:contactId", async (req, res, next) => {
-  res.json({ message: "template message" });
+  try {
+    const { contactId } = req.params;
+    console.log(req.params);
+    const result = await removeContact(contactId);
+    console.log(result);
+
+    if (!result) {
+      throw HttpError(404, `Contact with id "${contactId}" not found`);
+    }
+
+    res.json({
+      message: "contact deleted",
+    });
+  } catch (error) {
+    next(error);
+  }
 });
 
 router.put("/:contactId", async (req, res, next) => {
