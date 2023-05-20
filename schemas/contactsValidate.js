@@ -6,6 +6,7 @@ const contactAddSchema = Joi.object({
     .email({ minDomainSegments: 2, tlds: { allow: ["com", "net"] } })
     .required(),
   phone: Joi.string().required(),
+  favorite: Joi.boolean(),
 });
 
 module.exports = {
