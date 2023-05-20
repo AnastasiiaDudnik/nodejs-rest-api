@@ -4,7 +4,7 @@ const router = express.Router();
 
 const {
   getAllContacts,
-  // getOneById,
+  getOneById,
   // addToContacts,
   // deleteContact,
   // updateContact,
@@ -15,7 +15,7 @@ const {
 
 router.get("/", getAllContacts);
 
-// router.get("/:contactId", getOneById);
+router.get("/:contactId", getOneById);
 
 // router.post("/", validate(contactAddSchema), addToContacts);
 

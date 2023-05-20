@@ -1,6 +1,6 @@
 const Contact = require("../models/contact");
 
-// const { HttpError } = require("../helpers");
+const { HttpError } = require("../helpers");
 const { controllerWrap } = require("../decorators");
 
 const getAllContacts = async (req, res) => {
@@ -8,16 +8,16 @@ const getAllContacts = async (req, res) => {
   res.json(result);
 };
 
-// const getOneById = async (req, res) => {
-//   const { contactId } = req.params;
-//   const result = await getContactById(contactId);
+const getOneById = async (req, res) => {
+  const { contactId } = req.params;
+  const result = await Contact.findById(contactId);
 
-//   if (!result) {
-//     throw HttpError(404, `Contact with id "${contactId}" not found`);
-//   }
+  if (!result) {
+    throw HttpError(404, `Contact with id "${contactId}" not found`);
+  }
 
-//   res.json(result);
-// };
+  res.json(result);
+};
 
 const addToContacts = async (req, res, next) => {
   const result = await Contact.create(req.body);
@@ -50,7 +50,7 @@ const addToContacts = async (req, res, next) => {
 
 module.exports = {
   getAllContacts: controllerWrap(getAllContacts),
-  // getOneById: controllerWrap(getOneById),
+  getOneById: controllerWrap(getOneById),
   addToContacts: controllerWrap(addToContacts),
   // deleteContact: controllerWrap(deleteContact),
   // updateContact: controllerWrap(updateContact),
