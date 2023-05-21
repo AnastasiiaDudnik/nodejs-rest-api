@@ -37,21 +37,23 @@ const addToContacts = async (req, res, next) => {
 //   });
 // };
 
-// const updateContact = async (req, res, next) => {
-//   const { contactId } = req.params;
-//   const result = await updateContactById(contactId, req.body);
+const updateContact = async (req, res, next) => {
+  const { contactId } = req.params;
+  const result = await Contact.findByIdAndUpdate(contactId, req.body, {
+    new: true,
+  });
 
-//   if (!result) {
-//     throw HttpError(404, `Contact with id "${contactId}" not found`);
-//   }
+  if (!result) {
+    throw HttpError(404, `Contact with id "${contactId}" not found`);
+  }
 
-//   res.json(result);
-// };
+  res.json(result);
+};
 
 module.exports = {
   getAllContacts: controllerWrap(getAllContacts),
   getOneById: controllerWrap(getOneById),
   addToContacts: controllerWrap(addToContacts),
   // deleteContact: controllerWrap(deleteContact),
-  // updateContact: controllerWrap(updateContact),
+  updateContact: controllerWrap(updateContact),
 };

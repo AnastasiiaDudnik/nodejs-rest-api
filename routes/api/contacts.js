@@ -7,7 +7,7 @@ const {
   getOneById,
   addToContacts,
   // deleteContact,
-  // updateContact,
+  updateContact,
 } = require("../../controllers/contactsController");
 
 const { contactAddSchema, isValidId } = require("../../schemas");
@@ -21,6 +21,6 @@ router.post("/", validate(contactAddSchema), addToContacts);
 
 // router.delete("/:contactId", deleteContact);
 
-// router.put("/:contactId", validate(contactAddSchema), updateContact);
+router.put("/:contactId", isValidId, validate(contactAddSchema), updateContact);
 
 module.exports = router;
