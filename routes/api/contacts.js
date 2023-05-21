@@ -14,8 +14,9 @@ const {
 const {
   contactAddSchema,
   updateFavoriteSchema,
-  isValidId,
-} = require("../../schemas");
+} = require("../../schemas/contactsValidate");
+
+const isValidId = require("../../schemas/isValidId");
 const { validate } = require("../../decorators");
 
 router.get("/", getAllContacts);
