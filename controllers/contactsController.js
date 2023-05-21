@@ -24,18 +24,18 @@ const addToContacts = async (req, res, next) => {
   res.status(201).json(result);
 };
 
-// const deleteContact = async (req, res, next) => {
-//   const { contactId } = req.params;
-//   const result = await removeContact(contactId);
+const deleteContact = async (req, res, next) => {
+  const { contactId } = req.params;
+  const result = await Contact.findByIdAndRemove(contactId);
 
-//   if (!result) {
-//     throw HttpError(404, `Contact with id "${contactId}" not found`);
-//   }
+  if (!result) {
+    throw HttpError(404, `Contact with id "${contactId}" not found`);
+  }
 
-//   res.json({
-//     message: "contact deleted",
-//   });
-// };
+  res.json({
+    message: "contact deleted",
+  });
+};
 
 const updateContact = async (req, res, next) => {
   const { contactId } = req.params;
@@ -67,7 +67,7 @@ module.exports = {
   getAllContacts: controllerWrap(getAllContacts),
   getOneById: controllerWrap(getOneById),
   addToContacts: controllerWrap(addToContacts),
-  // deleteContact: controllerWrap(deleteContact),
+  deleteContact: controllerWrap(deleteContact),
   updateContact: controllerWrap(updateContact),
   updateFavorite: controllerWrap(updateFavorite),
 };
