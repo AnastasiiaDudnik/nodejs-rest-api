@@ -1,22 +1,16 @@
-const {
-  listContacts,
-  getContactById,
-  addContact,
-  updateContactById,
-  removeContact,
-} = require("../models/contacts");
+const Contact = require("../models/contact");
 
 const { HttpError } = require("../helpers");
 const { controllerWrap } = require("../decorators");
 
 const getAllContacts = async (req, res) => {
-  const result = await listContacts();
+  const result = await Contact.find();
   res.json(result);
 };
 
 const getOneById = async (req, res) => {
   const { contactId } = req.params;
-  const result = await getContactById(contactId);
+  const result = await Contact.findById(contactId);
 
   if (!result) {
     throw HttpError(404, `Contact with id "${contactId}" not found`);
@@ -26,13 +20,13 @@ const getOneById = async (req, res) => {
 };
 
 const addToContacts = async (req, res, next) => {
-  const result = await addContact(req.body);
+  const result = await Contact.create(req.body);
   res.status(201).json(result);
 };
 
 const deleteContact = async (req, res, next) => {
   const { contactId } = req.params;
-  const result = await removeContact(contactId);
+  const result = await Contact.findByIdAndRemove(contactId);
 
   if (!result) {
     throw HttpError(404, `Contact with id "${contactId}" not found`);
@@ -45,7 +39,22 @@ const deleteContact = async (req, res, next) => {
 
 const updateContact = async (req, res, next) => {
   const { contactId } = req.params;
-  const result = await updateContactById(contactId, req.body);
+  const result = await Contact.findByIdAndUpdate(contactId, req.body, {
+    new: true,
+  });
+
+  if (!result) {
+    throw HttpError(404, `Contact with id "${contactId}" not found`);
+  }
+
+  res.json(result);
+};
+
+const updateFavorite = async (req, res, next) => {
+  const { contactId } = req.params;
+  const result = await Contact.findByIdAndUpdate(contactId, req.body, {
+    new: true,
+  });
 
   if (!result) {
     throw HttpError(404, `Contact with id "${contactId}" not found`);
@@ -60,4 +69,5 @@ module.exports = {
   addToContacts: controllerWrap(addToContacts),
   deleteContact: controllerWrap(deleteContact),
   updateContact: controllerWrap(updateContact),
+  updateFavorite: controllerWrap(updateFavorite),
 };
