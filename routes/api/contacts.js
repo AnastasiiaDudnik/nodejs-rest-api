@@ -17,7 +17,10 @@ const {
 } = require("../../schemas/contactsValidate");
 
 const isValidId = require("../../middlewares/isValidId");
+const authenticate = require("../../middlewares/authenticate");
 const { validate } = require("../../decorators");
+
+router.use(authenticate);
 
 router.get("/", getAllContacts);
 
