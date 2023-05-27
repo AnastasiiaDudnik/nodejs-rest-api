@@ -4,7 +4,8 @@ const { HttpError } = require("../helpers");
 const { controllerWrap } = require("../decorators");
 
 const getAllContacts = async (req, res) => {
-  const result = await Contact.find();
+  const { _id: owner } = req.user;
+  const result = await Contact.find({ owner }).populate("owner", "email name");
   res.json(result);
 };
 
@@ -20,7 +21,8 @@ const getOneById = async (req, res) => {
 };
 
 const addToContacts = async (req, res, next) => {
-  const result = await Contact.create(req.body);
+  const { _id: owner } = req.user;
+  const result = await Contact.create({ ...req.body, owner });
   res.status(201).json(result);
 };
 
