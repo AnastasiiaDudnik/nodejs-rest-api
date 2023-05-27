@@ -7,8 +7,8 @@ const { validate } = require("../../decorators");
 
 const router = express.Router();
 
-router.post("/users/register", validate(registerSchema), register);
+router.post("/register", validate(registerSchema), register);
 
-router.post("/users/login", validate(loginSchema), login);
+router.post("/login", validate(loginSchema), login);
 
 module.exports = router;
