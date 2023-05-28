@@ -59,6 +59,25 @@ const getCurrent = async (req, res) => {
   });
 };
 
+const updateSubscription = async (req, res) => {
+  const { _id } = req.user;
+  const { subscription } = req.body;
+
+  const result = await User.findByIdAndUpdate(_id, req.body, {
+    new: true,
+  });
+
+  if (!result) {
+    throw HttpError(404, `User with id "${_id}" not found`);
+  }
+
+  if (!["starter", "pro", "business"].includes(subscription)) {
+    throw HttpError(400, `Invalid subscription value: ${subscription}`);
+  }
+
+  res.json(result);
+};
+
 const logout = async (req, res) => {
   const { _id } = req.user;
 
@@ -71,5 +90,6 @@ module.exports = {
   register: controllerWrap(register),
   login: controllerWrap(login),
   getCurrent: controllerWrap(getCurrent),
+  updateSubscription: controllerWrap(updateSubscription),
   logout: controllerWrap(logout),
 };

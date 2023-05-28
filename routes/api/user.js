@@ -4,6 +4,7 @@ const {
   register,
   login,
   getCurrent,
+  updateSubscription,
   logout,
 } = require("../../controllers/userController");
 
@@ -18,6 +19,8 @@ router.post("/register", validate(registerSchema), register);
 router.post("/login", validate(loginSchema), login);
 
 router.get("/current", authenticate, getCurrent);
+
+router.patch("/", authenticate, updateSubscription);
 
 router.post("/logout", authenticate, logout);
 
