@@ -5,10 +5,15 @@ const { controllerWrap } = require("../decorators");
 
 const getAllContacts = async (req, res) => {
   const { _id: owner } = req.user;
-  console.log(req.query);
   const { page = 1, limit = 10 } = req.query;
+  const { favorite } = req.query;
   const skip = (page - 1) * limit;
-  const result = await Contact.find({ owner }, null, {
+  const filter = { owner };
+  if (favorite) {
+    filter.favorite = favorite === "true";
+  }
+
+  const result = await Contact.find(filter, null, {
     skip,
     limit,
   }).populate("owner", "email name");
