@@ -4,7 +4,19 @@ const { HttpError } = require("../helpers");
 const { controllerWrap } = require("../decorators");
 
 const getAllContacts = async (req, res) => {
-  const result = await Contact.find();
+  const { _id: owner } = req.user;
+  const { page = 1, limit = 10 } = req.query;
+  const { favorite } = req.query;
+  const skip = (page - 1) * limit;
+  const filter = { owner };
+  if (favorite) {
+    filter.favorite = favorite === "true";
+  }
+
+  const result = await Contact.find(filter, null, {
+    skip,
+    limit,
+  }).populate("owner", "email name");
   res.json(result);
 };
 
@@ -20,7 +32,8 @@ const getOneById = async (req, res) => {
 };
 
 const addToContacts = async (req, res, next) => {
-  const result = await Contact.create(req.body);
+  const { _id: owner } = req.user;
+  const result = await Contact.create({ ...req.body, owner });
   res.status(201).json(result);
 };
 
