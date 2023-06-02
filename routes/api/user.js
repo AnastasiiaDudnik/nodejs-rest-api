@@ -10,7 +10,7 @@ const {
 
 const { registerSchema, loginSchema } = require("../../schemas/userValidate");
 const { validate } = require("../../decorators");
-const authenticate = require("../../middlewares/authenticate");
+const { authenticate } = require("../../middlewares");
 
 const router = express.Router();
 

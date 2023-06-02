@@ -16,8 +16,7 @@ const {
   updateFavoriteSchema,
 } = require("../../schemas/contactsValidate");
 
-const isValidId = require("../../middlewares/isValidId");
-const authenticate = require("../../middlewares/authenticate");
+const { isValidId, authenticate, upload } = require("../../middlewares");
 const { validate } = require("../../decorators");
 
 router.use(authenticate);
@@ -26,7 +25,12 @@ router.get("/", getAllContacts);
 
 router.get("/:contactId", isValidId, getOneById);
 
-router.post("/", validate(contactAddSchema), addToContacts);
+router.post(
+  "/",
+  upload.single("avatar"),
+  validate(contactAddSchema),
+  addToContacts
+);
 
 router.put("/:contactId", isValidId, validate(contactAddSchema), updateContact);
 
