@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const gravatar = require("gravatar");
 
 const User = require("../models/user");
 
@@ -17,11 +18,20 @@ const register = async (req, res) => {
   }
 
   const hashPassword = await bcrypt.hash(password, 10);
+  const avatar = gravatar.profile_url(email);
 
-  const newUser = await User.create({ ...req.body, password: hashPassword });
+  const newUser = await User.create({
+    ...req.body,
+    password: hashPassword,
+    avatarURL: avatar,
+  });
 
   res.status(201).json({
-    user: { email: newUser.email, subscription: "starter" },
+    user: {
+      email: newUser.email,
+      subscription: "starter",
+      avatarURL: newUser.avatarURL,
+    },
   });
 };
 
