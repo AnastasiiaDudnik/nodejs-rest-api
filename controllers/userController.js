@@ -7,7 +7,7 @@ const gravatar = require("gravatar");
 
 const User = require("../models/user");
 
-const { HttpError } = require("../helpers");
+const { HttpError, imageResize } = require("../helpers");
 const { controllerWrap } = require("../decorators");
 
 const { SECRET_KEY } = process.env;
@@ -99,6 +99,7 @@ const updateAvatar = async (req, res) => {
   const newPath = path.join(avatarPath, filename);
   await fs.rename(oldPath, newPath);
   const avatar = path.join("movies", filename);
+  imageResize(newPath, 250);
 
   const result = await User.findByIdAndUpdate(
     _id,
