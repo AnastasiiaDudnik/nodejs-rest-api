@@ -1,3 +1,6 @@
+const fs = require("fs").promises;
+const path = require("path");
+
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const gravatar = require("gravatar");
@@ -8,6 +11,8 @@ const { HttpError } = require("../helpers");
 const { controllerWrap } = require("../decorators");
 
 const { SECRET_KEY } = process.env;
+
+const avatarPath = path.resolve("public", "avatars");
 
 const register = async (req, res) => {
   const { email, password } = req.body;
@@ -88,6 +93,24 @@ const updateSubscription = async (req, res) => {
   res.json(result);
 };
 
+const updateAvatar = async (req, res) => {
+  const { _id } = req.user;
+  const { path: oldPath, filename } = req.file;
+  const newPath = path.join(avatarPath, filename);
+  await fs.rename(oldPath, newPath);
+  const avatar = path.join("public", "movies", filename);
+
+  const result = await User.findByIdAndUpdate(
+    _id,
+    { avatarURL: avatar },
+    {
+      new: true,
+    }
+  );
+
+  res.json({ avatarURL: result.avatarURL });
+};
+
 const logout = async (req, res) => {
   const { _id } = req.user;
 
@@ -101,5 +124,6 @@ module.exports = {
   login: controllerWrap(login),
   getCurrent: controllerWrap(getCurrent),
   updateSubscription: controllerWrap(updateSubscription),
+  updateAvatar: controllerWrap(updateAvatar),
   logout: controllerWrap(logout),
 };
