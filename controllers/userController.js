@@ -1,12 +1,18 @@
+const fs = require("fs").promises;
+const path = require("path");
+
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const gravatar = require("gravatar");
 
 const User = require("../models/user");
 
-const { HttpError } = require("../helpers");
+const { HttpError, imageResize } = require("../helpers");
 const { controllerWrap } = require("../decorators");
 
 const { SECRET_KEY } = process.env;
+
+const avatarPath = path.resolve("public", "avatars");
 
 const register = async (req, res) => {
   const { email, password } = req.body;
@@ -17,11 +23,20 @@ const register = async (req, res) => {
   }
 
   const hashPassword = await bcrypt.hash(password, 10);
+  const avatar = gravatar.profile_url(email);
 
-  const newUser = await User.create({ ...req.body, password: hashPassword });
+  const newUser = await User.create({
+    ...req.body,
+    password: hashPassword,
+    avatarURL: avatar,
+  });
 
   res.status(201).json({
-    user: { email: newUser.email, subscription: "starter" },
+    user: {
+      email: newUser.email,
+      subscription: "starter",
+      avatarURL: newUser.avatarURL,
+    },
   });
 };
 
@@ -78,6 +93,25 @@ const updateSubscription = async (req, res) => {
   res.json(result);
 };
 
+const updateAvatar = async (req, res) => {
+  const { _id } = req.user;
+  const { path: oldPath, filename } = req.file;
+  const newPath = path.join(avatarPath, filename);
+  await fs.rename(oldPath, newPath);
+  const avatar = path.join("movies", filename);
+  imageResize(newPath, 250);
+
+  const result = await User.findByIdAndUpdate(
+    _id,
+    { avatarURL: avatar },
+    {
+      new: true,
+    }
+  );
+
+  res.json({ avatarURL: result.avatarURL });
+};
+
 const logout = async (req, res) => {
   const { _id } = req.user;
 
@@ -91,5 +125,6 @@ module.exports = {
   login: controllerWrap(login),
   getCurrent: controllerWrap(getCurrent),
   updateSubscription: controllerWrap(updateSubscription),
+  updateAvatar: controllerWrap(updateAvatar),
   logout: controllerWrap(logout),
 };

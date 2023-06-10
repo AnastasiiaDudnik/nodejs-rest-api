@@ -16,8 +16,7 @@ const {
   updateFavoriteSchema,
 } = require("../../schemas/contactsValidate");
 
-const isValidId = require("../../middlewares/isValidId");
-const authenticate = require("../../middlewares/authenticate");
+const { isValidId, authenticate } = require("../../middlewares");
 const { validate } = require("../../decorators");
 
 router.use(authenticate);
