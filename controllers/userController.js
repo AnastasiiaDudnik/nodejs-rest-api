@@ -69,6 +69,27 @@ const verify = async (req, res) => {
   });
 };
 
+const resendVerification = async (req, res) => {
+  const { email } = req.body;
+  const user = await User.findOne({ email });
+
+  if (user) {
+    throw HttpError(400, "Verification has already been passed");
+  }
+
+  const varifyEmail = {
+    to: email,
+    subject: "Verify email",
+    html: `<a target="_blank" href="${PROJECT_URL}/api/users/verify/${user.varificationCode}">Click to verify email</a>`,
+  };
+
+  await sendEmail(varifyEmail);
+
+  res.json({
+    message: "Verification email sent",
+  });
+};
+
 const login = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
@@ -159,6 +180,7 @@ const logout = async (req, res) => {
 module.exports = {
   register: controllerWrap(register),
   verify: controllerWrap(verify),
+  resendVerification: controllerWrap(resendVerification),
   login: controllerWrap(login),
   getCurrent: controllerWrap(getCurrent),
   updateSubscription: controllerWrap(updateSubscription),
