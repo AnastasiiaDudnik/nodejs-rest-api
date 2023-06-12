@@ -60,6 +60,13 @@ const login = async (req, res) => {
     throw HttpError(401, "Email or password is wrong");
   }
 
+  if (!user.verify) {
+    throw HttpError(
+      401,
+      `Unable to login without email verification. Please verify your email ${email} first`
+    );
+  }
+
   const payload = {
     id: user._id,
   };
